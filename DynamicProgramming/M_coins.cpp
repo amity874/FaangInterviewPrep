@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+// https://www.spoj.com/problems/MCOINS/
 //#include<ext/pb_ds/assoc_container.hpp>
 //using namespace __gnu_pbds;
 using namespace std;
@@ -44,8 +45,30 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-int Allocation(vector)
+
 int main(int argc, char const *argv[]) {
 	file_i_o();
+	ll k,l,m;
+	std::cin>>k>>l>>m;
+	vi query(m,0);
+	vi dp(1000006,0);
+	loop(i,0,m-1){
+		std::cin>>query[i];
+	}
+	dp[1]=1;
+	dp[k]=1;
+	dp[l]=1;
+	loop(i,2,1000000){
+		if(i==k or i==l)continue;
+		if(dp[i-1]==0)dp[i]=1;
+		if(i-k>=1 && dp[i-k]==0)dp[i]=1;
+		if(i-l>=1 && dp[i-l]==0)dp[i]=1;
+	}
+	loop(i,0,m-1){
+		if(dp[query[i]]==1)std::cout<<"A";
+		else{
+			std::cout<<"B";
+		}
+	}
 	return 0;
 }

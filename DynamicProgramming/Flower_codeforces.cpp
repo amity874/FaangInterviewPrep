@@ -44,8 +44,34 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-int Allocation(vector)
+int* flower(int k){
+	int *dp=new int[100005];
+	dp[0]=1;
+	for(int i=1;i<=100000;i++){
+		if(i==1 && k==1){
+			dp[i]=2;
+		}
+		if(i-k<0){
+		dp[i]=dp[i-1]%mod;			
+		}
+		else if(i-k>=0){
+			dp[i]=(dp[i-1]%mod+dp[i-k]%mod)%mod;
+		}
+	}
+	for(int i=1;i<=100000;i++){
+		dp[i]=(dp[i]%mod+dp[i-1]%mod)%mod;
+	}
+	return dp;
+}
 int main(int argc, char const *argv[]) {
 	file_i_o();
+	ll t,k;
+	std::cin>>t>>k;
+	int *ans=flower(k);
+	while(t--){
+		int a,b;
+		std::cin>>a>>b;
+		cout<<(ans[b]%mod-ans[a-1]%mod+mod)%mod<<"\n";
+	}
 	return 0;
 }

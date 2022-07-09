@@ -44,8 +44,65 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-int Allocation(vector)
+ll Get(vector<int> &parent,int a){
+    return parent[a]=((parent[a]==a)?a:Get(parent,parent[a]));
+}
+void Union(vector<int> &parent,vector<int> &rank,int a,int b){
+    a=Get(parent,a);
+    b=Get(parent,b);
+    if(rank[a]==rank[b]){
+        rank[a]++;
+    }
+    if(rank[a]>rank[b]){
+        parent[b]=a;
+    }
+    else{
+        parent[a]=b;
+    }
+}
+
+int x_dir[4]={-1,1,0,0};
+int y_dir[4]={0,0,-1,1};
 int main(int argc, char const *argv[]) {
 	file_i_o();
+	int n,m,t;
+	std::cin>>n>>m>>t;
+	vector<pair<int,int>> pos(t);
+	loop(i,0,t-1){
+		std::cin>>pos[i].ff>>pos[i].ss;
+	}
+	vector<int> ans;
+	vector<int> par(n*m,-1);
+	vector<int> rank(n*m,1);
+	int count=0;
+	for(int i=0;i<t;i++){
+		int x=pos[i].ff;
+		int y=pos[i].ss;
+		int colno=x*n+y;
+		if(par[colno]!=-1){
+			ans.push_back(colno);
+			continue;
+		}
+		par[colno]=colno;
+		count++;
+		for(int d=0;d<4;d++){
+			int x1=x_dir[d]+x;
+			int y1=y_dir[d]+y;
+			int coldash=x1*n+y1;
+			if(x1<0 or y1<0 or x1>=n or y1>=m or par[coldash]==-1){
+				continue;
+			}
+			int ls=Get(par,colno);
+			int lr=Get(par,coldash);
+			if(ls!=lr){
+				Union(par,rank,colno,coldash);
+			count--;
+			}
+		}
+		ans.push_back(count);
+	}
+	for(auto &it:ans){
+		cout<<it<<" ";
+	}
 	return 0;
 }
