@@ -44,69 +44,37 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-std::unordered_map<std::string,int> Rank;
-std::unordered_map<std::string,std::string> parent;
-std::string Get(std::string &str){
-if(!parent.count(str)){
-	parent[str]=str;
-	Rank[str]=1;
-}
-if(parent.count(str)){
-	return str;
-}
-std::string ans=Get(parent[str]);
-parent[str]=ans;
-return ans;
-}
-void Union(std::string &s1,std::string &s2){
-	s1=Get(s1);
-	s2=Get(s2);
-	if(Rank[s1]==Rank[s2]){
-		Rank[s1]++;
+bool cmp(string &s1,string &s2){
+	int p1=s1.find(' ');
+	int p2=s2.find(' ');
+	string x1=s1.substr(p1+1);
+	string x2=s2.substr(p2+1);
+	if(x1==x2){
+		return s1<s2;
 	}
-	if(Rank[s1]>Rank[s2]){
-		parent[s2]=s1;
-	}
-	else if(Rank[s1]>Rank[s2]){
-		parent[s1]=s2;
-	}
+	return x1<x2;
 }
-bool find_Similiraty(vector<string> &s1,vector<string> &s2,std::vector<std::pair<std::string,std::string>> &Pair){
-int n=s1.size();
-int m=s2.size();
-if(n!=m){
-	return false;
-}	
-for(auto &it:Pair){
-	Union(it.first,it.second);
+ vector<string> reorderLogFiles(vector<string>& logs) {
+ vector<string> l;
+ vector<string> d;
+ vector<string> ans;
+ for(int i=0;i<logs.size();i++){
+ 	string temp=logs[i];
+ 	int pos=temp.find(' ');
+ 	if(temp[pos+1]<=9 && temp[pos+1]>=0){
+ 		d.push_back(temp);
+ 	}
+ 	else{
+ 		l.push_back(temp);
+ 	}
+ }
+ sort(l.begin(),l.end(),cmp);
+ sort(d.begin(),d.end(),cmp);
+ ans.insert(ans.end(),l.begin(),l.end());
+ ans.insert(ans.end(),d.begin(),d.end());
+ return ans;
 }
-for(int i=0;i<s1.size();i++){
-	std::string w1=s1[i];
-	std::string w2=s2[i];
-	if(w1!=w2 && Get(w1)!=Get(w2)){
-		return false;
-	}
-}
-return true;
-}
-int main(int argc, char const *argv[]) {
-	// file_i_o();
-	int n;
-	std::cin>>n;
-	std::vector<std::string> sentence1(n);
-	std::vector<std::string> sentence2(n);
-	for(int i=0;i<n;i++){
-		std::cin>>sentence1[i];
-	}
-	for(int i=0;i<n;i++){
-		std::cin>>sentence2[i];
-	}
-	std::vector<std::pair<std::string,std::string>> Pair;
-	int m;
-	std::cin>>m;
-	for(int i=0;i<m;i++){
-		std::cin>>Pair[i].first>>Pair[i].second;
-	}
-	std::cout<<find_Similiraty(sentence1,sentence2,Pair);
+ int main(int argc, char const *argv[]) {
+	file_i_o();
 	return 0;
 }

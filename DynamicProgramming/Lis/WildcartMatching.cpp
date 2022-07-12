@@ -44,69 +44,37 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-std::unordered_map<std::string,int> Rank;
-std::unordered_map<std::string,std::string> parent;
-std::string Get(std::string &str){
-if(!parent.count(str)){
-	parent[str]=str;
-	Rank[str]=1;
-}
-if(parent.count(str)){
-	return str;
-}
-std::string ans=Get(parent[str]);
-parent[str]=ans;
-return ans;
-}
-void Union(std::string &s1,std::string &s2){
-	s1=Get(s1);
-	s2=Get(s2);
-	if(Rank[s1]==Rank[s2]){
-		Rank[s1]++;
+bool f(int i,int j,string &s1,string &s2){
+	if(i<0 && j<0){
+		return true;
 	}
-	if(Rank[s1]>Rank[s2]){
-		parent[s2]=s1;
-	}
-	else if(Rank[s1]>Rank[s2]){
-		parent[s1]=s2;
-	}
-}
-bool find_Similiraty(vector<string> &s1,vector<string> &s2,std::vector<std::pair<std::string,std::string>> &Pair){
-int n=s1.size();
-int m=s2.size();
-if(n!=m){
-	return false;
-}	
-for(auto &it:Pair){
-	Union(it.first,it.second);
-}
-for(int i=0;i<s1.size();i++){
-	std::string w1=s1[i];
-	std::string w2=s2[i];
-	if(w1!=w2 && Get(w1)!=Get(w2)){
+	if(i<0 && j>=0){
 		return false;
 	}
+	if(i>0 && j<0){
+		bool f1=true;
+		for(int i1=0;i1<=i;i1++){
+			if(s1[i1]!='*'){
+				f1=false;
+				break;
+			}
+		}
+		return f1?true:false;
+	}
+	if(s1[i]==s2[j] or s1[i]=='?'){
+		return f(i-1,j-1,s1,s2);
+	}
+	else if(s1[i]=='*'){
+		return (f(i-1,j,s1,s2)or f(i,j-1,s1,s2));
+	}
+	return false;
 }
-return true;
+ bool isMatch(string &text, string &patt) {
+ 	int n=text.size();
+ 	int m=patt.size();
+std::vector<std::vector<bool>> dp(n+1,std::vector<bool>(m+1,false));
 }
 int main(int argc, char const *argv[]) {
-	// file_i_o();
-	int n;
-	std::cin>>n;
-	std::vector<std::string> sentence1(n);
-	std::vector<std::string> sentence2(n);
-	for(int i=0;i<n;i++){
-		std::cin>>sentence1[i];
-	}
-	for(int i=0;i<n;i++){
-		std::cin>>sentence2[i];
-	}
-	std::vector<std::pair<std::string,std::string>> Pair;
-	int m;
-	std::cin>>m;
-	for(int i=0;i<m;i++){
-		std::cin>>Pair[i].first>>Pair[i].second;
-	}
-	std::cout<<find_Similiraty(sentence1,sentence2,Pair);
+	file_i_o();
 	return 0;
 }
