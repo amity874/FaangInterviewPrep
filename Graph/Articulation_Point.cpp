@@ -44,81 +44,55 @@ void file_i_o()
         freopen("output.txt", "w", stdout);
     #endif
 }
+    vector<int> vis(10006);
+    vector<int> low(10006);
+    vector<int> dist(10006);
+    vector<int> ap(10006,false);
 class Solution {
-public:
-    long long subArrayRanges(vector<int>& arr) {
-        int n=arr.size();
-        std::stack<long long> st;
-        vector<long long> leftS(n);
-        vector<long long> rightS(n);
-        vector<long long> leftG(n);
-        vector<long long> rightG(n);
-        for(int i=0;i<n;i++){
-            while(not st.empty() && arr[st.top()]>=arr[i]){
-                st.pop();
+  public:
+
+    int timer=0;
+    void dfs(int src,int par, vector<int>g[]){
+        dist[src]=low[src]=timer;
+        timer++;
+        int count=0;
+        vis[src]=true;
+        for(auto &child:g[src]){
+            if(child==par){
+                continue;
             }
-            if(st.empty()){
-                leftS[i]=i;
-            }
-            else{
-                leftS[i]=(i-st.top())-1;
-            }
-            st.push(i);
-        }
-        while(not st.empty()){
-            st.pop();
-        }
-        for(int i=n-1;i>=0;i--){
-            while(not st.empty() && arr[st.top()]>arr[i]){
-                st.pop();
-            }
-            if(st.empty()){
-                rightS[i]=(n-i)-1;
+            else if(vis[child]){
+                low[src]=min(low[src],dist[child]);
             }
             else{
-                rightS[i]=(st.top()-i)-1;
+                count++;
+                dfs(child,src,g);
+                if(par==-1){
+                    if(count>=2){
+                        ap[child]=true;
+                    }
+                }
+                else{
+                    if(low[child]>=low[src]){
+                        ap[child]=true;
+                    }
+                }
             }
-            st.push(i);
-        } 
-         while(not st.empty()){
-            st.pop();
         }
-        for(int i=0;i<n;i++){
-            while(not st.empty() && arr[st.top()]<=arr[i]){
-                st.pop();
+    }
+    vector<int> articulationPoints(int V, vector<int>adj[]){
+        vector<int> ans;
+        dfs(0,-1,adj);
+        for(int i=0;i<=10005;i++){
+            if(ap[i]==true){
+                ans.push_back(i);
             }
-            if(st.empty()){
-                leftG[i]=i;
-            }
-            else{
-                leftG[i]=(i-st.top())-1;
-            }
-            st.push(i);
-        }
-        while(not st.empty()){
-            st.pop();
-        }
-        for(int i=n-1;i>=0;i--){
-            while(not st.empty() && arr[st.top()]<arr[i]){
-                st.pop();
-            }
-            if(st.empty()){
-                rightG[i]=(n-i)-1;
-            }
-            else{
-                rightG[i]=(st.top()-i)-1;
-            }
-            st.push(i);
-        }
-        long long  ans=0;
-            for(int i=0;i<n;i++){
-            long long a=(leftS[i]+1)*(rightS[i]+1);
-            long long b=(rightG[i]+1)*(leftG[i]+1);
-            ans+=arr[i]*(b-a);
         }
         return ans;
     }
-};
+
+}; 
+
 int main(int argc, char const *argv[]) {
     file_i_o();
     return 0;

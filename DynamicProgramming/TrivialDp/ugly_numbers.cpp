@@ -44,22 +44,32 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-  int findMaxValueOfEquation(vector<vector<int>>& points, int k) {
-        std::priority_queue<pair<int,int>> pq;
-        pq.push({points[0][1]-points[0][0],points[0][0]});
-        int ans=INT_MIN;
-        for(int i=1;i<points.size();i++){
-            while(not pq.empty() && points[i][0]-pq.top().second>k){
-                pq.pop();
-            }
-            if(not pq.empty()){
-                ans=max(ans,points[i][1]+points[i][0]+pq.top().first);
-            }
-            pq.push({points[i][1]-points[i][0],points[i][0]});
-        }
-        return ans;
-    }
+
 int main(int argc, char const *argv[]) {
-	file_i_o();
+// 	file_i_o();
+	int n;
+	std::cin>>n;
+	vector<int> dp(n+1);
+	int p2=1;
+	int p3=1;
+	int p5=1;
+	dp[p2]=dp[p3]=dp[p5]=1;
+	for(int i=2;i<=n;i++){
+		int x1=dp[p2]*2;
+		int x2=dp[p3]*3;
+		int x3=dp[p5]*5;
+		int ans=min({x1,x2,x3});
+		if(x1==ans){
+			p2++;
+		}
+		if(x2==ans){
+			p3++;
+		}
+		if(x3==ans){
+			p5++;
+		}
+		dp[i]=ans;
+	}
+	cout<<dp[n];
 	return 0;
 }
