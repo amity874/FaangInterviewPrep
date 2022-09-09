@@ -44,24 +44,9 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-class Solution {
-public:
-    int partitionArray(vector<int>& nums, int k) {
-        int lo=0;
-        int hi=0;
-        int n=nums.size();
-        std::sort(nums.begin(),nums.end());
-        int ans=0;
-        while(hi<n){
-            while(hi<n && nums[hi]-nums[lo]<=k){
-                hi++;
-            }
-            lo=hi;
-            ans++;
-        }
-        return ans;
-    }
-};
+
+
+
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

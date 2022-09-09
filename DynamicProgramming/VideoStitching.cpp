@@ -44,20 +44,37 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
+
+#define ll long long int
 class Solution {
 public:
-    int partitionArray(vector<int>& nums, int k) {
-        int lo=0;
-        int hi=0;
-        int n=nums.size();
-        std::sort(nums.begin(),nums.end());
-        int ans=0;
-        while(hi<n){
-            while(hi<n && nums[hi]-nums[lo]<=k){
-                hi++;
-            }
-            lo=hi;
-            ans++;
+    int dp[105][105];
+    ll f(vector<vector<int>>& clips,int time,int cost,int idx){
+        //base case
+        if(cost>=time){
+            return 0;
+        }
+        if(idx==clips.size()){
+            return INT_MAX;
+        }
+        if(cost<clips[idx][0]){
+            return INT_MAX;
+        }
+        if(dp[idx][cost]!=-1){
+            return dp[idx][cost];
+        }
+        ll not_pick=f(clips,time,cost,idx+1);
+        ll pick;
+        pick=1+f(clips,time,clips[idx][1],idx+1);
+        return dp[idx][cost]=min(not_pick,pick);
+    }
+    int videoStitching(vector<vector<int>>& clips, int time) {
+        std::sort(clips.begin(),clips.end());
+        memset(dp,-1,sizeof(dp));
+        int n=clips.size();
+        int ans=f(clips,time,0,0);
+        if(ans==INT_MAX){
+            return -1;
         }
         return ans;
     }
