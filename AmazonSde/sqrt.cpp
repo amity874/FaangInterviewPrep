@@ -44,38 +44,23 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
+double sqrt__(int m) {
+    double low = 1;
+    double high = m;
+    double eps = 1e-7; 
+    while((high - low) > eps) {
+        double mid = (low + high) / 2.0; 
+        if(mid*mid < m) {
+            low = mid; 
         }
-        return ans;
+        else {
+            high = mid; 
+        }
     }
-};
-
+    return low; 
+}
 int main(int argc, char const *argv[]) {
-	file_i_o();
+	// file_i_o();
+	cout<<sqrt(81)<<"\n";
 	return 0;
 }

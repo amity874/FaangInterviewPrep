@@ -1,3 +1,4 @@
+// https://leetcode.com/problems/minimum-obstacle-removal-to-reach-corner/description/
 #include<bits/stdc++.h>
 //#include<ext/pb_ds/assoc_container.hpp>
 //using namespace __gnu_pbds;
@@ -44,34 +45,41 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
+int xdir[4]={0,0,-1,1};
+int ydir[4]={-1,1,0,0};
+    int minimumObstacles(vector<vector<int>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+        std::deque<vector<int>> dq;
+        vector<vector<bool>> vis(n,vector<bool>(m,false));
+        dq.push_back({0,0,0});
+        while(not dq.empty()){
+            auto tp=dq.front();
+            dq.pop_front();
+            int wt=tp[0];
+            int u=tp[1];
+            int v=tp[2];
+            if(u==n-1 && v==m-1){
+                return wt;
             }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
+            vis[u][v]=true;
+            for(int i=0;i<4;i++){
+                int x=xdir[i]+u;
+                int y=ydir[i]+v;
+                if(x>=0 && y>=0 && x<n && y<m && vis[x][y]==false){
+                    if(grid[x][y]==1){
+                        dq.push_back({wt+1,x,y});
+                    }
+                    else{
+                        dq.push_front({wt+0,x,y});
+                    }
+                    vis[x][y]=true;
                 }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
             }
         }
-        return ans;
+        return -1;
     }
 };
 

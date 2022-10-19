@@ -44,37 +44,68 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
+class DllNode{
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
+	DllNode *prev;
+	DllNode *next;
+	int key;
+	int val;
+	DllNode (int key,int val){
+		this->key=key;
+		this->val=val;
+	}
+};
+class LRUCache {
+public:
+	std::unordered_map<int,DllNode*> mp;
+	//initial setup
+	DllNode *head=new DllNode(-1,-1);
+	DllNode *tail=new DllNode(-1,-1);
+	int size=0;
+    LRUCache(int capacity) {
+    size=capacity;
+    head->next=tail;
+	tail->prev=head;
+    }
+    void AddNode(DllNode *node){
+    DllNode *temp=head->next;
+    node->next=temp;
+    node->prev=head;
+    head->next=node;
+    temp->prev=node;
+    }
+    void DeleteNode(DllNode *node){
+    	DllNode *delprev=node->prev;
+    	DllNode *delnext=node->next;
+    	delprev->next=delnext;
+    	delnext->prev=delprev;
+    }
+    int get(int key) {
+        if(mp.find(key)!=mp.end()){
+        	DllNode *node=mp[key];
+        	int res=node->val;
+        	mp.erase(key);
+        	DeleteNode(node);
+        	AddNode(node);
+        	mp[key]=head->next;
+        	return res;
         }
-        return ans;
+        return -1;
+    }
+    void put(int key, int value) {
+        if(mp.find(key)!=mp.end()){
+        	DllNode *node=mp[key];
+        	mp.erase(key);
+        	DeleteNode(node);
+        }
+        else if(mp.size()==size){
+        	mp.erase(tail->prev->val);
+        	DeleteNode(tail->prev);
+        }
+        AddNode(new DllNode(key,value));
+        mp[key]=head->next;
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

@@ -47,34 +47,46 @@ void file_i_o()
 
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
+    vector<vector<string>> findSequences(string beginWord, string endWord, vector<string>& wordList) {
+        // code here
+        std::queue<vector<string>> qu;
+        qu.push({beginWord});
+        std::vector<string> usedInlvl;
+        vector<vector<string>> ans;
+        unordered_set<string> vis(wordList.begin(), wordList.end());
+        usedInlvl.push_back(beginWord);
+        int lvl=0;
+        while(not qu.empty()){
+        	vector<string> curr=qu.front();
+        	qu.pop();
+        	if(curr.size()>lvl){
+        		lvl++;
+        		for(auto &it:usedInlvl){
+        			vis.erase(it);
+        		}
+        		usedInlvl.clear();
+        	}
+        	string word=curr.back();
+        	if(word==endWord){
+        	    ans.push_back(curr);
+        	}
+        	for(int i=0;i<word.size();i++){
+        		char ch=word[i];
+        		for(int j='a';j<='z';j++){
+        			word[i]=j;
+        			if(vis.count(word)>0){
+        				curr.push_back(word);
+        				qu.push(curr);
+        				usedInlvl.push_back(word);
+        				curr.pop_back();
+        			}
+        		}
+        		word[i]=ch;
+        	}
         }
         return ans;
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

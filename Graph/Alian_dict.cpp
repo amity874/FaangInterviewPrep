@@ -44,37 +44,57 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
+class Solution{
+    public:
+    vector<int> topo_Sort(vector<int> g[],int K){
+        std::queue<int> qu;
+        vector<int> indegree(K,0);
+        vector<int> ans;
+        for(int i=0;i<K;i++){
+            for(auto &it:g[i]){
+                indegree[it]++;
             }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
+        }
+        for(int i=0;i<K;i++){
+            if(indegree[i]==0){
+                qu.push(i);
+            }
+        }
+        while(not qu.empty()){
+            auto tp=qu.front();
+            qu.pop();
+            ans.push_back(tp);
+            for(auto &it:g[tp]){
+                indegree[it]--;
+                if(indegree[it]==0){
+                    qu.push(it);
                 }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
             }
         }
         return ans;
     }
+    string findOrder(string dict[], int N, int K) {
+        //code here
+        vector<int> g[K];
+        for(int i=0;i<N;i++){
+            string s1=dict[i];
+            string s2=dict[i+1];
+            int len=min(s1.size(),s2.size());
+            for(int j=0;j<len;j++){
+                if(s1[j]!=s2[j]){
+                    g[s1[j]-'0'].push_back(s2[j]);
+                    break;
+                }
+            }
+        }
+        vector<int> ans=topo_Sort(g,K);
+        string res="";
+        for(auto &it:ans){
+            res=res+char(it+'a');
+        }
+        return res;
+    }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

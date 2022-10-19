@@ -24,8 +24,6 @@ using namespace std;
 #define logarr(arr,a,b)	for(int z=(a);z<=(b);z++) cout<<(arr[z])<<" ";cout<<endl;	
 #define token(str,ch)	(std::istringstream var((str)); vs v; string t; while(getline((var), t, (ch))) {v.pb(t);} return v;)
 vs tokenizer(string str,char ch) {std::istringstream var((str)); vs v; string t; while(getline((var), t, (ch))) {v.pb(t);} return v;}
-
-
 void err(istream_iterator<string> it) {}
 template<typename T, typename... Args>
 void err(istream_iterator<string> it, T a, Args... args) {
@@ -44,37 +42,33 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
-        }
-        return ans;
+    int getLengthOfOptimalCompression(string s, int k) {
+        int n=s.size();
+        int dp[n+1][k+1];
+        memset(dp,1,sizeof(dp));
+        dp[0][0]=0;
+        for(int i=1;i<=n;i++){
+            for(int j=0;j<=k;j++){
+                if(j) dp[i][j]=min(dp[i][j],dp[i-1][j-1]);   //if i decide to delete the ith char
+                    int cnt=0;//freq of same char
+                    int del=0;//freq of char to be deleted
+                    for(int k=i;k>=1;k--){
+                        if(s[i-1]==s[k-1]){
+                            ++cnt;
+                        }
+                        else{
+                            ++del;
+                        }
+                        if(j-del<0) break;
+                        dp[i][j]=min(dp[i][j],dp[k-1][j-del]+1+(cnt>=100?3:cnt>=10?2:cnt>=2?1:0));
+                    }
+                 }
+               }
+        return dp[n][k];
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

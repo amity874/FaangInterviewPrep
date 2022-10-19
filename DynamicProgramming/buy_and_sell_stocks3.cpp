@@ -47,34 +47,33 @@ void file_i_o()
 
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
+    int dp[100008][2][3];
+    int f(vector<int> &prices,int idx,int buy,int cap){
+        if(cap==0){
+            return 0;
         }
-        return ans;
+        if(idx==prices.size()){
+            return 0;
+        }
+        if(dp[idx][buy][cap]!=-1){
+            return dp[idx][buy][cap];
+        }
+       if(buy){
+           return max({-prices[idx]+f(prices,idx+1,0,cap),0+f(prices,idx+1,1,cap)});
+       } 
+        return dp[idx][buy][cap]=max({prices[idx]+f(prices,idx+1,1,cap-1),0+f(prices,idx+1,0,cap)});
+    }
+    int maxProfit(vector<int>& prices) { 
+        memset(dp,0,sizeof(dp));
+        for(int i=prices.size()-1;i>=0;i--){
+            for(int cap=1;cap<=2;cap++){
+            dp[i][1][cap]=max({-prices[i]+dp[i+1][0][cap],dp[i+1][1][cap]});
+            dp[i][0][cap]=max({prices[i]+dp[i+1][1][cap-1],dp[i+1][0][cap]});
+        }
+        }
+        return dp[0][1][2];
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

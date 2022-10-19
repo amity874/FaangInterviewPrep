@@ -17,7 +17,6 @@ using namespace std;
 #define pq_min          priority_queue<ll,vi,greater<ll> >
 #define ff 				first
 #define ss 				second
-#define mid(l,r)        (l+(r-l)/2)
 #define loop(i,a,b) 	for(int i=(a);i<=(b);i++)
 #define looprev(i,a,b) 	for(int i=(a);i>=(b);i--)
 #define log(args...) 	{ string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); stringstream _ss(_s); istream_iterator<string> _it(_ss); err(_it, args); }
@@ -44,38 +43,34 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
-        }
-        return ans;
+#include <bits/stdc++.h>
+using namespace std;
+double multiply(double number, int n) {
+    double ans = 1.0;
+    for(int i = 1;i<=n;i++) {
+        ans = ans * number;
     }
-};
+    return ans; 
+}
 
-int main(int argc, char const *argv[]) {
-	file_i_o();
+void getNthRoot(int n, int m) {
+    double low = 1;
+    double high = m;
+    double eps = 1e-7; 
+    
+    while((high - low) > eps) {
+        double mid = (low + high) / 2.0; 
+        if(multiply(mid, n) < m) {
+            low = mid; 
+        }
+        else {
+            high = mid; 
+        }
+    }
+    cout <<n<<"th root of "<<m<<" is "<<low<<endl; 
+}
+int main() {
+	int n=3, m=27; 
+	getNthRoot(n, m); 
 	return 0;
 }

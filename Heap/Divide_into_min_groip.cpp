@@ -47,31 +47,24 @@ void file_i_o()
 
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
+    int minGroups(vector<vector<int>>& intervals) {
+        std::sort(intervals.begin(),intervals.end());
+        std::priority_queue<int,vector<int>,greater<int>> pq;
+        pq.push(intervals[0][1]);
+        for(int i=1;i<intervals.size();i++){
+            auto tp=pq.top();
+            int y1=tp;
+            int x2=intervals[i][0];
+            int y2=intervals[i][1];
+            if(x2>y1){
+                pq.pop();
+                pq.push(y2);
             }
             else{
-                lo=i;
-                hi=i;
+                pq.push(y2);
             }
         }
-        return ans;
+        return pq.size();
     }
 };
 

@@ -44,37 +44,18 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
+    int maxProfit(vector<int>& prices, int fee) {
+        int n=prices.size();
+        vector<vector<int>> dp(n+1,vector<int>(2,0));
+        for(int i=n-1;i>=0;i--){
+            dp[i][1]=max({-prices[i]+dp[i+1][0],0+dp[i+1][1]});
+            dp[i][0]=max({prices[i]+dp[i+1][1]-fee,0+dp[i+1][0]});
         }
-        return ans;
+        return dp[0][1];
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

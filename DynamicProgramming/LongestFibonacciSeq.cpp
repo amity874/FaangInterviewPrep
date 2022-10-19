@@ -44,37 +44,36 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
+    int lenLongestFibSubseq(vector<int>& arr) {
         int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
+       std::unordered_map<int,int> mp;
+        for(int i=0;i<n;i++){
+            mp[arr[i]]=i;
+        }
+         int dp[1001][1001];
+        memset(dp, 0, sizeof(dp));
+         for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                dp[i][j] = 2; 
             }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
+        }
+        int ans=0;
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                   int val=arr[i]+arr[j];
+                if(mp.find(val)!=mp.end()){
+                    int idx1=mp[arr[j]];
+                    int idx2=mp[val];
+                    dp[idx1][idx2]=1+dp[i][j];
+                    ans=max(ans,dp[idx1][idx2]);
                 }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
             }
         }
         return ans;
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

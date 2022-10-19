@@ -44,37 +44,33 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
-        }
-        return ans;
-    }
-};
-
+int search(vector<int>& nums, int target) {
+int lo=0;
+int hi=nums.size()-1;
+while(lo<=hi){
+	int mid=lo+(hi-lo)/2;
+	if(nums[mid]==target){
+		return mid;
+	}
+	if(nums[lo]<=nums[mid]){
+		if(target>=nums[lo] && target<=nums[mid]){
+			hi=mid-1;
+		}
+		else{
+			lo=mid+1;
+		}
+	}
+	else{
+		if(target>=nums[mid] && target<=nums[hi]){
+			lo=mid+1;
+		}
+		else{
+			hi=mid-1;
+		}
+	}
+}  
+return -1;
+}
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

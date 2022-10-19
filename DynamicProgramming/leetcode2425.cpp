@@ -44,37 +44,29 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
+int dfs(int n,int m,int int i,int j,vector<vector<int>> grid,vector<vector<bool>> &vis,int sum,int k){
+	if(i<0 or j<0 or i>=n or j>=m or vis[i][j]=true){
+		return 0;
+	}
+	vis[i][j]=true;
+	if(i==n-1 && j==m-1){
+		if((sum+grid[i][j])%k){
+			return 1;
+		}
+		return 0;
+	}
+	int x=dfs(n,m,i+1,j,grid,vis,sum+grid[i][j],k);
+	int y=dfs(n,m,i,j+1,grid,vis,sum+grid[i][j],k);
+	return x+y;
+}
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
-        }
-        return ans;
+    int numberOfPaths(vector<vector<int>>& grid, int k) {
+        int n=nums.size();
+        int m=nums.size();
+        return dfs(n,m,0,0,grid,vis,sum,k);
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

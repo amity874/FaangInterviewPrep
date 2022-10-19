@@ -44,31 +44,38 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
 class Solution {
 public:
-    int longestMountain(vector<int>& arr) {
+    int largestVariance(string s) {
+       int f1=0;
+       int f2=0;
+       int n=s.size();
         int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
+        vector<int> freq(27);
+        for(auto &it:s){
+            freq[it-'a']++;
+        }
+        for(char ch1='a';ch1<='z';ch1++){
+            for(char ch2='a';ch2<='z';ch2++){
+                if(ch1==ch2 or !freq[ch1-'a'] or !freq[ch2-'a']){
+                    continue;
                 }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
+                for(int i=1;i<=2;i++){
+                    int f1=0;
+                    int f2=0;
+                    for(auto &it:s){
+                        f1+=(ch1==it);
+                        f2+=(ch2==it);
+                        if(f1<f2){
+                            f1=0;
+                            f2=0;
+                        }
+                        if(f1>0 && f2>0){
+                            ans=max(ans,f1-f2);
+                        }
+                    }
+                    reverse(s.begin(),s.end());
+                }
             }
         }
         return ans;

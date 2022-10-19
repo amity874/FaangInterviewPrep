@@ -44,35 +44,48 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
 class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
+  public:
+  	int xdir[4]={-1,1,0,0};
+  	int ydir[4]={0,0,-1,1};
+    int numberOfEnclaves(vector<vector<int>> &grid) {
+        // Code here
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<vector<int>> vis(n,vector<int>(m,0));
+        std::queue<pair<int,int>> q;
+        for(int i=0;i<n;i++){
+        	for(int j=0;j<m;j++){
+        		if(i==0 or j==0 or i==n-1 or j==m-1){
+        			if(grid[i][j]==1){
+        				q.push({i,j});
+        				vis[i][j]=true;
+        			}
+        		}
+        	}
         }
-        return ans;
-    }
+    while(not q.empty()){
+  			auto tp=q.front();
+  			q.pop();
+  			for(int i=0;i<4;i++){
+  			int x=tp.first+xdir[i];
+  			int y=tp.second+ydir[i];
+  			if(x>=0 && y>=0 && x<n && y<m && vis[x][y]==0 && grid[x][y]==1){
+  				q.push({x,y});
+  				vis[x][y]=true;
+  			}
+  			}
+  		}
+  		int cnt=0;
+  		for(int i=0;i<n;i++){
+  			for(int j=0;j<m;j++){
+  				if(vis[i][j]==0 && grid[i][j]==1){
+  					cnt++;
+  				}
+  			}
+  		}
+  		return cnt;
+  	}
 };
 
 int main(int argc, char const *argv[]) {

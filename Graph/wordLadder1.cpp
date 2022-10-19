@@ -44,36 +44,34 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
+int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        std::queue<string> qu;
+         unordered_set<string> vis(wordList.begin(), wordList.end());
+        qu.push(beginWord);
+        int lvl=1;
+        while(not qu.empty()){
+        	int n=qu.size();
+        	while(n--){
+        		auto word=qu.front();
+        		qu.pop();
+        		if(word==endWord){
+        			return lvl;
+        		}
+        		for(int i=0;i<word.size();i++){
+        			char ch=word[i];
+        			for(char j='a';j<='z';j++){
+        				word[i]=j;
+        				if(vis.find(word)!=vis.end()){
+        					vis.erase(word);
+        					qu.push(word);
+        				}
+        			}
+        			word[i]=ch;
+        		}
+        	}
         }
-        return ans;
-    }
-};
+        return 0;
+}
 
 int main(int argc, char const *argv[]) {
 	file_i_o();

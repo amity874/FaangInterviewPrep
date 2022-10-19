@@ -45,37 +45,27 @@ void file_i_o()
 	#endif
 }
 
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
-        }
-        return ans;
-    }
-};
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
+	ll n,k;
+	std::cin>>n>>k;
+	vector<ll> arr(n);
+	loop(i,0,n-1){
+		std::cin>>arr[i];
+	}
+	ll dp[n];
+	dp[0]=0;
+	dp[1]=abs(arr[0]-arr[1]);
+	for(int i=2;i<n;i++){
+		ll mn=INT_MAX;
+		for(int j=1;j<=k;j++){
+			if(i-j>=0){
+				ll jump=abs(arr[i]-arr[i-j])+dp[i-j];
+				mn=min(mn,jump);
+			}
+		}
+		dp[i]=mn;
+	}
+	cout<<dp[n-1];
 	return 0;
 }

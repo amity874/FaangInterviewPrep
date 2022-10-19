@@ -44,38 +44,50 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
-        }
-        return ans;
-    }
-};
-
+bool possible(vector<ll> &arr,ll min_dist,int k){
+	ll ini_dist=arr[0];
+	ll cnt=1;
+	for(int i=1;i<arr.size();i++){
+		int dist=arr[i]-ini_dist;
+		if(dist>=min_dist){
+			cnt++;
+			ini_dist=arr[i];
+		}
+		if(cnt==k){
+			return true;
+		}
+	}
+	return (cnt==k)?true:false;
+}
+ll binary_sarch(vector<ll> &arr,int k){
+	int lo=1;
+	int hi=(arr[arr.size()-1]-arr[0]);
+	ll ans=-1;
+	while(lo<=hi){
+		ll mid=lo+(hi-lo)/2;
+		if(possible(arr,mid,k)){
+			ans=mid;
+			lo=mid+1;
+		}
+		else{
+			hi=mid-1;
+		}
+	}
+	return ans;
+}
 int main(int argc, char const *argv[]) {
 	file_i_o();
+	ll t;
+	std::cin>>t;
+	while(t--){
+		ll n,k;
+		std::cin>>n>>k;
+		vector<ll> arr(n);
+		for(int i=0;i<n;i++){
+			std::cin>>arr[i];
+		}
+		std::sort(arr.begin(),arr.end());
+		cout<<binary_sarch(arr,k)<<"\n";
+	}
 	return 0;
 }

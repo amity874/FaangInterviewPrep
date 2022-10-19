@@ -44,38 +44,53 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-
-class Solution {
-public:
-    int longestMountain(vector<int>& arr) {
-        int ans=0;
-        int lo=0;
-        int hi=0;
-        int n=arr.size();
-        for(int i=1;i<n;i++){
-            if(arr[i-1]<arr[i]){
-                hi=i;
-            }
-            else if(arr[i-1]>arr[i] && (hi-lo+1)>=2){
-                while(i<n && arr[i-1]>arr[i]){
-                    i++;
-                }
-                i--;
-                hi=i;
-                ans=max(ans,(hi-lo)+1);
-                lo=i;
-                hi=i;
-            }
-            else{
-                lo=i;
-                hi=i;
-            }
-        }
-        return ans;
-    }
+struct job{
+	ll s,e,p;
 };
-
+static bool cmp(job &a ,job &b){
+return a.e<b.e;
+}
+ll possible(job arr[],int idx){
+	ll lo=0;
+	ll hi=idx;
+	ll target=arr[idx].s;
+	ll ans=-1;
+	while(lo<=hi){
+		int mid=lo+(hi-lo)/2;
+		if(arr[mid].e<target){
+			if(arr[mid+1].e<target){
+				lo=mid+1;
+			}
+			else{
+				return mid;
+			}
+		}
+		else{
+			hi=mid-1;
+		}
+	}
+	return ans;
+}
 int main(int argc, char const *argv[]) {
 	file_i_o();
+	ll n;
+	std::cin>>n;
+	struct job arr[n];
+	for(int i=0;i<n;i++){
+		cin>>arr[i].s>>arr[i].e>>arr[i].p;
+	} 
+	std::sort(arr,arr+n,cmp);
+	vector<ll> dp(n,INT_MAX);
+	dp[0]=arr[0].p;
+	for(int i=1;i<n;i++){
+		ll incl=arr[i].p;
+		ll excl=dp[i-1];
+		ll idx=possible(arr,i);
+		if(idx!=-1){
+			incl+=dp[idx];
+		}
+		dp[i]=max(incl,excl);
+	}
+	cout<<dp[n-1];
 	return 0;
 }
