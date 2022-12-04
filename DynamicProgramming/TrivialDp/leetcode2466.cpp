@@ -46,35 +46,28 @@ void file_i_o()
 }
 class Solution {
 public:
-char getMx(int i,string &str){
-    char res=str[i];
-    int idx=0;
-    for(int j=i;j<str.size();j++){
-        if(str[j]>=res){
-            res=str[j];
-            idx=j;
-        }
+int f(int lim,int zero,int one,vector<int> &dp){
+    if(lim<0){
+        return 0;
     }
-    return idx;
+    if(lim==0){
+        return 1;
+    }
+    if(dp[lim]!=-1){
+        return dp[lim];
+    }
+    int z=f(lim-zero,zero,one,dp);
+    int o=f(lim-one,zero,one,dp);
+    return dp[lim]=(z%mod+o%mod)%mod;
 }
-    int maximumSwap(int num) {
-        string str=to_string(num);
-        int idx=getMx(0,str);
-        cout<<idx<<" ";
-        for(int i=0;i<idx;i++){
-            if(str[i]!=str[idx]){
-                swap(str[i],str[idx]);
-                return stoi(str); 
-            }
+    int countGoodStrings(int low, int high, int zero, int one) {
+        int n=max(low,high);
+        vector<int> dp(n+1,-1);
+        ll ans=0;
+        for(int i=low;i<=high;i++){
+            ans=(ans+f(i,zero,one,dp))%mod;
         }
-        for(int j=idx;j<str.size();j++){
-            int idx=getMx(j,str);
-            if(str[j]!=str[idx]){
-                swap(str[j],str[idx]);
-                return stoi(str); 
-            }
-        }
-        return stoi(str);
+        return ans%mod;
     }
 };
 int main(int argc, char const *argv[]) {

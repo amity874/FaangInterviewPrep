@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+// https://leetcode.com/problems/smallest-range-covering-elements-from-k-lists/description/
 //#include<ext/pb_ds/assoc_container.hpp>
 //using namespace __gnu_pbds;
 using namespace std;
@@ -44,86 +45,44 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-class DSU {
-    vector<int> par,rank;
-        public:
-    DSU(int n){
-        par.resize(n+1);
-        rank.resize(n+1);
-        for(int i=0;i<=n;i++){
-            par[i]=i;
-            rank[i]=0;
-        }
-    }
-      int Get(int node){
-            if(par[node]==node){
-                return node;
-            }
-            return par[node]=Get(par[node]);
-      }
-        void Union(int u,int v){
-            int ult_u=Get(u);
-            int ult_v=Get(v);
-            if(ult_u==ult_v){
-                return;
-            }
-            if(rank[ult_u]>rank[ult_v]){
-                par[ult_v]=ult_u;
-            }
-            else if(rank[ult_u]<rank[ult_v]){
-                par[ult_u]=ult_v;
-            }
-            else{
-                par[ult_u]=ult_v;
-                rank[ult_u]++;
-            }
-        }
-};
 class Solution {
-  public:
-    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
-        // code here
-        vector<vector<int>>vis(n,vector<int>(m,0));
-        int xdir[4]={0,0,-1,1};
-        int ydir[4]={1,-1,0,0};
-        int sz=(n*m);
-        DSU ds(sz);
-        int k=operators.size();
+public:
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+        int n=nums.size();
+        int m=nums[0].size();
+        vector<int> res={-100000,100000};
         vector<int> ans;
-        int cnt=0;
-        for(auto &it:operators){
-            int u=it[0];
-            int v=it[1];
-            if(vis[u][v]){
-            	ans.push_back(cnt);
-            	continue;
+        int maxi=INT_MIN;
+        std:priority_queue<vector<int>,vector<vector<int>>,greater<vector<int>>> pq;
+        for(int i=0;i<n;i++){
+            int el=nums[i][0];
+            int x=i;
+            int y=0;
+            pq.push({el,x,y});
+            maxi=max(maxi,el);
+        }
+        while(true){
+            auto tp=pq.top();
+            pq.pop();
+            //now updating the range
+            if(res[1]-res[0]>maxi-tp[0]){
+                res[0]=tp[0];
+                res[1]=maxi;
+            }
+            tp[2]++;
+            vector<int>cl=nums[tp[1]];
+            if(tp[2]==cl.size()){
+                break;
             }
             else{
-            	vis[u][v]=1;
-            	cnt++;
-            	for(int i=0;i<4;i++){
-            		int x=u+xdir[i];
-            		int y=v+ydir[i];
-            		int idx1=(x*m)+y;
-            		int idx2=(u*m)+v;
-            		if(x>=0 && y>=0 && x<n && y<m){
-            		if(vis[x][y]==1){
-            			idx1=ds.Get(idx1);
-            		    idx2=ds.Get(idx2);
-            			if(idx1!=idx2){
-            				cnt--;
-            				ds.Union(idx1,idx2);
-            			}
-            		}
-            	}
-            }
-            	ans.push_back(cnt);
+                tp[0]=cl[tp[2]];
+                pq.push(tp);
+                maxi=max(maxi,tp[0]);
             }
         }
-        return ans;
+        return res;
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

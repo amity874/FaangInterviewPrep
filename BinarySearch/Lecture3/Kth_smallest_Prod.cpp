@@ -44,86 +44,60 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-class DSU {
-    vector<int> par,rank;
-        public:
-    DSU(int n){
-        par.resize(n+1);
-        rank.resize(n+1);
-        for(int i=0;i<=n;i++){
-            par[i]=i;
-            rank[i]=0;
-        }
-    }
-      int Get(int node){
-            if(par[node]==node){
-                return node;
-            }
-            return par[node]=Get(par[node]);
-      }
-        void Union(int u,int v){
-            int ult_u=Get(u);
-            int ult_v=Get(v);
-            if(ult_u==ult_v){
-                return;
-            }
-            if(rank[ult_u]>rank[ult_v]){
-                par[ult_v]=ult_u;
-            }
-            else if(rank[ult_u]<rank[ult_v]){
-                par[ult_u]=ult_v;
-            }
-            else{
-                par[ult_u]=ult_v;
-                rank[ult_u]++;
-            }
-        }
-};
-class Solution {
-  public:
-    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
-        // code here
-        vector<vector<int>>vis(n,vector<int>(m,0));
-        int xdir[4]={0,0,-1,1};
-        int ydir[4]={1,-1,0,0};
-        int sz=(n*m);
-        DSU ds(sz);
-        int k=operators.size();
-        vector<int> ans;
-        int cnt=0;
-        for(auto &it:operators){
-            int u=it[0];
-            int v=it[1];
-            if(vis[u][v]){
-            	ans.push_back(cnt);
-            	continue;
-            }
-            else{
-            	vis[u][v]=1;
-            	cnt++;
-            	for(int i=0;i<4;i++){
-            		int x=u+xdir[i];
-            		int y=v+ydir[i];
-            		int idx1=(x*m)+y;
-            		int idx2=(u*m)+v;
-            		if(x>=0 && y>=0 && x<n && y<m){
-            		if(vis[x][y]==1){
-            			idx1=ds.Get(idx1);
-            		    idx2=ds.Get(idx2);
-            			if(idx1!=idx2){
-            				cnt--;
-            				ds.Union(idx1,idx2);
-            			}
-            		}
-            	}
-            }
-            	ans.push_back(cnt);
-            }
-        }
-        return ans;
-    }
-};
 
+#define ll long long int
+class Solution {
+public:
+ll possible(vector<int>& nums1, vector<int>& nums2,ll m){
+    ll ans=0;
+    for(int &it:nums1){
+        if(it>=0){
+        int lo=0;
+        int hi=nums2.size();
+        while(lo<hi){
+            ll mid=lo+(hi-lo)/2;
+            if((ll)it*nums2[mid]<m){
+                lo=mid+1;
+            }
+            else{
+                hi=mid;
+            }
+        }
+        ans+=lo;
+        }
+        else{
+        int lo=0;
+        int hi=nums2.size();
+            while(lo<hi){
+            ll mid=lo+(hi-lo)/2;
+            if((ll)it*nums2[mid]>=m){
+                lo=mid+1;
+            }
+            else{
+                hi=mid;
+            }
+        }
+        ans+=(nums2.size()-lo);
+        }
+    }
+    return ans;
+}
+    long long kthSmallestProduct(vector<int>& nums1, vector<int>& nums2, long long k) {
+      ll lo=(ll)-1e10;
+      ll hi=(ll) 1e10;
+      ll ans=0;
+      while(lo<=hi){
+          ll mid=lo+(hi-lo)/2;
+          if(possible(nums1,nums2,mid)<k){
+              lo=mid+1;
+          }
+          else{
+              hi=mid-1;
+          }
+      }
+      return hi;
+    }
+};
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

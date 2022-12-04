@@ -44,39 +44,56 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-class Solution {
-public:
-char getMx(int i,string &str){
-    char res=str[i];
-    int idx=0;
-    for(int j=i;j<str.size();j++){
-        if(str[j]>=res){
-            res=str[j];
-            idx=j;
-        }
-    }
-    return idx;
-}
-    int maximumSwap(int num) {
-        string str=to_string(num);
-        int idx=getMx(0,str);
-        cout<<idx<<" ";
-        for(int i=0;i<idx;i++){
-            if(str[i]!=str[idx]){
-                swap(str[i],str[idx]);
-                return stoi(str); 
-            }
-        }
-        for(int j=idx;j<str.size();j++){
-            int idx=getMx(j,str);
-            if(str[j]!=str[idx]){
-                swap(str[j],str[idx]);
-                return stoi(str); 
-            }
-        }
-        return stoi(str);
-    }
+struct Job{
+	int e;
+	int s;
+	int profit;
 };
+static bool cmp(Job a,Job b){
+	return a.e<b.e;
+}
+int binarySearch(vector<Job> &arr,int target){
+	int lo=0;
+	int hi=arr.size()-1;
+	int ans=-1;
+	while(lo<=hi){
+		int mid=lo+(hi-lo)/2;
+		if(arr[mid].e<=arr[target].s){
+			ans=mid;
+			lo=mid+1;
+		}
+		else{
+			hi=mid-1;
+		}
+	}
+	return ans;
+}
+int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
+	int n=profit.size();
+	vector<Job> arr(n);
+	vector<int> dp(n);
+	for(int i=0;i<n;i++){
+		int start=startTime[i];
+		int end=endTime[i];
+		int p=profit[i];
+		arr[i].s=start;
+		arr[i].e=end;
+		arr[i].profit=p;
+	}
+	std::sort(arr.begin(),arr.end(),cmp);
+	int ans=0;
+	dp[0]=arr[0].profit;
+	for(int i=1;i<n;i++){
+		int incl=arr[i].profit;
+		int excl=dp[i-1];
+		int idx=binarySearch(arr,arr[i].s);
+		if(idx!=-1){
+			incl+=dp[idx];
+		}
+		dp[i]=max(incl,excl);
+	}
+	return dp[n-1];
+}
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

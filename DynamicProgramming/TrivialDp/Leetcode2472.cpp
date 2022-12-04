@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+// https://leetcode.com/problems/maximum-number-of-non-overlapping-palindrome-substrings/description/
 //#include<ext/pb_ds/assoc_container.hpp>
 //using namespace __gnu_pbds;
 using namespace std;
@@ -46,35 +47,57 @@ void file_i_o()
 }
 class Solution {
 public:
-char getMx(int i,string &str){
-    char res=str[i];
-    int idx=0;
-    for(int j=i;j<str.size();j++){
-        if(str[j]>=res){
-            res=str[j];
-            idx=j;
+int non_Overlapping(vector<pair<int,int>> &arr){
+    int cnt=0;
+    int left=0;
+    int right=1;
+    int n=arr.size();
+    while(right<n){
+        if(arr[left].second<arr[right].first){
+            left=right;
+            right++;
+        }
+        else if(arr[left].second<=arr[right].second){
+            cnt++;
+            right++;
+        }
+        else if(arr[left].second>arr[right].second){
+            cnt+=1;
+            left=right;
+            right++;
         }
     }
-    return idx;
+    return n-cnt;
 }
-    int maximumSwap(int num) {
-        string str=to_string(num);
-        int idx=getMx(0,str);
-        cout<<idx<<" ";
-        for(int i=0;i<idx;i++){
-            if(str[i]!=str[idx]){
-                swap(str[i],str[idx]);
-                return stoi(str); 
-            }
-        }
-        for(int j=idx;j<str.size();j++){
-            int idx=getMx(j,str);
-            if(str[j]!=str[idx]){
-                swap(str[j],str[idx]);
-                return stoi(str); 
-            }
-        }
-        return stoi(str);
+    int maxPalindromes(string s, int k) {
+      int n=s.size();
+      vector<vector<bool>> dp(n,vector<bool>(n,0));
+      for(int gap=0;gap<n;gap++){
+          for(int i=0,j=gap;j<n;j++,i++){
+              if(gap==0){
+                  dp[i][j]=1;
+              }
+              else if(gap==1){
+                  dp[i][j]=(s[i]==s[j]);
+              }
+              else{
+                  if(s[i]==s[j] && dp[i+1][j-1]){
+                      dp[i][j]=true;
+                  }
+              }
+          }
+      }
+      vector<pair<int,int>> ans;
+      for(int i=0;i<n;i++){
+          for(int j=i;j<n;j++){
+              if(dp[i][j] && (j-i+1>=k)){
+                  ans.push_back({i,j});
+              }
+          }
+      }
+      std::sort(ans.begin(),ans.end());
+      int res=non_Overlapping(ans);
+      return res;
     }
 };
 int main(int argc, char const *argv[]) {

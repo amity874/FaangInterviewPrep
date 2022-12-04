@@ -44,37 +44,41 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
+
+#define ll long long int
+#define mod 10000000007
 class Solution {
 public:
-char getMx(int i,string &str){
-    char res=str[i];
-    int idx=0;
-    for(int j=i;j<str.size();j++){
-        if(str[j]>=res){
-            res=str[j];
-            idx=j;
-        }
-    }
-    return idx;
+ int gcd(int a, int b) {
+      if (b == 0)
+        return a;
+      return gcd(b, a%b);
+    };
+  
+    int lcm(int a, int b) {
+      return (a * b) / gcd(a, b);
+    };
+ll cntNumber(ll mid,ll a,ll b){
+   ll a1=mid/a;
+   ll b1=mid/b;
+   ll c1=mid/lcm(a,b);
+   return a1+b1-c1;
 }
-    int maximumSwap(int num) {
-        string str=to_string(num);
-        int idx=getMx(0,str);
-        cout<<idx<<" ";
-        for(int i=0;i<idx;i++){
-            if(str[i]!=str[idx]){
-                swap(str[i],str[idx]);
-                return stoi(str); 
+    int nthMagicalNumber(int n, int a, int b){
+        ll lo=1;
+        ll hi=1e17;
+        ll ans=0;
+        while(lo<=hi){
+            ll mid=(lo+hi)/2;
+            if(cntNumber(mid,a,b)<n){
+                lo=mid+1;
+            }
+            else{
+               ans=mid;
+               hi=mid-1;
             }
         }
-        for(int j=idx;j<str.size();j++){
-            int idx=getMx(j,str);
-            if(str[j]!=str[idx]){
-                swap(str[j],str[idx]);
-                return stoi(str); 
-            }
-        }
-        return stoi(str);
+        return (int)ans%mod;
     }
 };
 int main(int argc, char const *argv[]) {

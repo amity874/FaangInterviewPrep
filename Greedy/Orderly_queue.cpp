@@ -44,39 +44,32 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
+
 class Solution {
-public:
-char getMx(int i,string &str){
-    char res=str[i];
-    int idx=0;
-    for(int j=i;j<str.size();j++){
-        if(str[j]>=res){
-            res=str[j];
-            idx=j;
+    public String orderlyQueue(String s, int k) {
+        char[] arr=s.toCharArray();
+        if(k>1){
+            Arrays.sort(arr);
+            return String.valueOf(arr);
         }
+        String ans=s;
+        for(int i=0;i<s.length();i++){
+            rotateArr(arr);
+            int diff=ans.compareTo(String.valueOf(arr));
+            if(diff>=1){
+            ans=String.valueOf(arr);
+            }
+        }
+        return ans;
     }
-    return idx;
+    public void rotateArr(char[] arr){
+        char temp=arr[0];
+        for(int i=0;i<arr.length-1;i++){
+            arr[i]=arr[i+1];
+        }
+        arr[arr.length-1]=temp;
+    }
 }
-    int maximumSwap(int num) {
-        string str=to_string(num);
-        int idx=getMx(0,str);
-        cout<<idx<<" ";
-        for(int i=0;i<idx;i++){
-            if(str[i]!=str[idx]){
-                swap(str[i],str[idx]);
-                return stoi(str); 
-            }
-        }
-        for(int j=idx;j<str.size();j++){
-            int idx=getMx(j,str);
-            if(str[j]!=str[idx]){
-                swap(str[j],str[idx]);
-                return stoi(str); 
-            }
-        }
-        return stoi(str);
-    }
-};
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

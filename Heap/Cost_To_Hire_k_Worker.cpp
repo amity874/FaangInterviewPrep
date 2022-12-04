@@ -1,3 +1,4 @@
+// https://leetcode.com/problems/total-cost-to-hire-k-workers/description/
 #include<bits/stdc++.h>
 //#include<ext/pb_ds/assoc_container.hpp>
 //using namespace __gnu_pbds;
@@ -44,86 +45,39 @@ void file_i_o()
 	    freopen("output.txt", "w", stdout);
 	#endif
 }
-class DSU {
-    vector<int> par,rank;
-        public:
-    DSU(int n){
-        par.resize(n+1);
-        rank.resize(n+1);
-        for(int i=0;i<=n;i++){
-            par[i]=i;
-            rank[i]=0;
-        }
-    }
-      int Get(int node){
-            if(par[node]==node){
-                return node;
-            }
-            return par[node]=Get(par[node]);
-      }
-        void Union(int u,int v){
-            int ult_u=Get(u);
-            int ult_v=Get(v);
-            if(ult_u==ult_v){
-                return;
-            }
-            if(rank[ult_u]>rank[ult_v]){
-                par[ult_v]=ult_u;
-            }
-            else if(rank[ult_u]<rank[ult_v]){
-                par[ult_u]=ult_v;
-            }
-            else{
-                par[ult_u]=ult_v;
-                rank[ult_u]++;
-            }
-        }
-};
 class Solution {
-  public:
-    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
-        // code here
-        vector<vector<int>>vis(n,vector<int>(m,0));
-        int xdir[4]={0,0,-1,1};
-        int ydir[4]={1,-1,0,0};
-        int sz=(n*m);
-        DSU ds(sz);
-        int k=operators.size();
-        vector<int> ans;
+public:
+    long long totalCost(vector<int>& costs, int k, int candidates) {
+        std::priority_queue<int,vector<int>,greater<int>> leftPq;
+        std::priority_queue<int,vector<int>,greater<int>> rightPq;
+        long long ans=0;
         int cnt=0;
-        for(auto &it:operators){
-            int u=it[0];
-            int v=it[1];
-            if(vis[u][v]){
-            	ans.push_back(cnt);
-            	continue;
+        int i=0;
+        int j=costs.size()-1;
+        while(cnt<k){
+            while(leftPq.size()<candidates && i<=j){
+                leftPq.push(costs[i]);
+                i++;
+            }
+            while(rightPq.size()<candidates && j>=i){
+                rightPq.push(costs[j]);
+                j--;
+            }
+            ll a=leftPq.size()==0?INT_MAX:leftPq.top();
+            ll b=rightPq.size()==0?INT_MAX:rightPq.top();
+            if(a<=b){
+                ans+=leftPq.top();
+                leftPq.pop();
             }
             else{
-            	vis[u][v]=1;
-            	cnt++;
-            	for(int i=0;i<4;i++){
-            		int x=u+xdir[i];
-            		int y=v+ydir[i];
-            		int idx1=(x*m)+y;
-            		int idx2=(u*m)+v;
-            		if(x>=0 && y>=0 && x<n && y<m){
-            		if(vis[x][y]==1){
-            			idx1=ds.Get(idx1);
-            		    idx2=ds.Get(idx2);
-            			if(idx1!=idx2){
-            				cnt--;
-            				ds.Union(idx1,idx2);
-            			}
-            		}
-            	}
+                ans+=rightPq.top();
+                rightPq.pop();
             }
-            	ans.push_back(cnt);
-            }
+            cnt++;
         }
         return ans;
     }
 };
-
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;

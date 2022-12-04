@@ -45,14 +45,17 @@ void file_i_o()
 	#endif
 }
 class DSU {
-    vector<int> par,rank;
+public:
+    vector<int> par,rank,sz;
         public:
     DSU(int n){
         par.resize(n+1);
         rank.resize(n+1);
+        sz.resize(n+1);
         for(int i=0;i<=n;i++){
             par[i]=i;
             rank[i]=0;
+            sz[i]=1;
         }
     }
       int Get(int node){
@@ -78,51 +81,52 @@ class DSU {
                 rank[ult_u]++;
             }
         }
-};
-class Solution {
-  public:
-    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
-        // code here
-        vector<vector<int>>vis(n,vector<int>(m,0));
-        int xdir[4]={0,0,-1,1};
-        int ydir[4]={1,-1,0,0};
-        int sz=(n*m);
-        DSU ds(sz);
-        int k=operators.size();
-        vector<int> ans;
-        int cnt=0;
-        for(auto &it:operators){
-            int u=it[0];
-            int v=it[1];
-            if(vis[u][v]){
-            	ans.push_back(cnt);
-            	continue;
+        void UnionBySize(int u,int v){
+        	 int ult_u=Get(u);
+            int ult_v=Get(v);
+            if(ult_u==ult_v){
+            	return;
+            }
+            if(sz[ult_u]<sz[ult_v]){
+            	par[ult_u]=ult_v;
+            	sz[ult_v]+=sz[ult_u];
             }
             else{
-            	vis[u][v]=1;
-            	cnt++;
-            	for(int i=0;i<4;i++){
-            		int x=u+xdir[i];
-            		int y=v+ydir[i];
-            		int idx1=(x*m)+y;
-            		int idx2=(u*m)+v;
-            		if(x>=0 && y>=0 && x<n && y<m){
-            		if(vis[x][y]==1){
-            			idx1=ds.Get(idx1);
-            		    idx2=ds.Get(idx2);
-            			if(idx1!=idx2){
-            				cnt--;
-            				ds.Union(idx1,idx2);
-            			}
-            		}
-            	}
-            }
-            	ans.push_back(cnt);
+            	par[ult_v]=ult_u;
+            	sz[ult_u]+=sz[ult_v];
             }
         }
-        return ans;
+};
+class Solution {
+public:
+    int maxRemove(vector<vector<int>>& stones, int n) {
+        // Code here
+        int row=0;
+        int col=0;
+        for(auto &it:stones){
+            row=max(row,it[0]);
+            col=max(col,it[1]);
+        }
+        DSU ds((row+col)+1);
+        std::unordered_map<int,int> mpIdx;
+        for(auto &it:stones){
+            int row_=it[0];
+            int col_=it[1]+row+1;
+            ds.Union(row_,col_);
+            mpIdx[row_]=1;
+            mpIdx[col_]=1;
+        }
+        int cnt=0;
+        for(auto &it:mpIdx){
+            if(ds.Get(it.first)==it.first){
+                cnt++;
+            }
+        }
+        return n-cnt;
     }
 };
+
+
 
 int main(int argc, char const *argv[]) {
 	file_i_o();

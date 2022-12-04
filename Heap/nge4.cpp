@@ -46,35 +46,33 @@ void file_i_o()
 }
 class Solution {
 public:
-char getMx(int i,string &str){
-    char res=str[i];
-    int idx=0;
-    for(int j=i;j<str.size();j++){
-        if(str[j]>=res){
-            res=str[j];
-            idx=j;
-        }
-    }
-    return idx;
-}
-    int maximumSwap(int num) {
-        string str=to_string(num);
-        int idx=getMx(0,str);
-        cout<<idx<<" ";
-        for(int i=0;i<idx;i++){
-            if(str[i]!=str[idx]){
-                swap(str[i],str[idx]);
-                return stoi(str); 
-            }
-        }
-        for(int j=idx;j<str.size();j++){
-            int idx=getMx(j,str);
-            if(str[j]!=str[idx]){
-                swap(str[j],str[idx]);
-                return stoi(str); 
-            }
-        }
-        return stoi(str);
+    vector<int> secondGreaterElement(vector<int>& nums) {
+        int n=nums.size();
+     std::vector<int> nge(n,n);
+     std::stack<int> st;
+     for(int i=n-1;i>=0;i--){
+         while(not st.empty() && nums[st.top()]<=nums[i]){
+             st.pop();
+         }
+         if(not st.empty()){
+             nge[i]=st.top();
+         }
+         st.push(i);
+     } 
+     vector<int> ans(n,n);
+     for(int i=0;i<n;i++){
+         int l=nge[i]+1;
+         while(l<n && nums[i]>=nums[l]){
+             l=nge[l];
+         }
+         if(l>=n){
+             ans[i]=-1;
+         }
+         else{
+             ans[i]=nums[l];
+         }
+     }  
+     return ans;
     }
 };
 int main(int argc, char const *argv[]) {

@@ -46,37 +46,27 @@ void file_i_o()
 }
 class Solution {
 public:
-char getMx(int i,string &str){
-    char res=str[i];
-    int idx=0;
-    for(int j=i;j<str.size();j++){
-        if(str[j]>=res){
-            res=str[j];
-            idx=j;
-        }
+long long digit_sum(long long n){
+    long long sum=0;
+    while(n){
+        sum+=n%10;
+        n/=10;
     }
-    return idx;
+    return sum;
 }
-    int maximumSwap(int num) {
-        string str=to_string(num);
-        int idx=getMx(0,str);
-        cout<<idx<<" ";
-        for(int i=0;i<idx;i++){
-            if(str[i]!=str[idx]){
-                swap(str[i],str[idx]);
-                return stoi(str); 
-            }
+    long long makeIntegerBeautiful(long long n, int target) {
+        long long num=n;
+        long long count=10;
+        long long temp=n;
+        while(digit_sum(temp)>target){
+            long long first=(num%count);
+            temp=n+count-first;
+            count*=10;
         }
-        for(int j=idx;j<str.size();j++){
-            int idx=getMx(j,str);
-            if(str[j]!=str[idx]){
-                swap(str[j],str[idx]);
-                return stoi(str); 
-            }
-        }
-        return stoi(str);
+        return temp-n;
     }
 };
+
 int main(int argc, char const *argv[]) {
 	file_i_o();
 	return 0;
